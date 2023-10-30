@@ -1,0 +1,14 @@
+plugins {
+  id "com.github.node-gradle.node" version "7.0.1"
+}
+
+task clean (type: Delete) {
+  delete 'dist'
+}
+
+/*
+task build {
+  dependsOn tasks.getByPath('npm_run_build')
+}
+ */
+
