@@ -2,8 +2,3 @@ rootProject.name = 'dijkstras-lab'
 
 include 'frontend'
 
-include 'backend:services:projects:imperative:api'
-include 'backend:services:projects:imperative:mysql'
-
-include 'backend:services:projects:reactive:api'
-include 'backend:services:projects:reactive:mysql'

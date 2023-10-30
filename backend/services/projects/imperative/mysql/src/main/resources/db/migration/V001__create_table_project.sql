@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS project
-(
-    id      BINARY(16)      NOT NULL PRIMARY KEY,
-    name    VARCHAR(255)    NOT NULL,
-    comment VARCHAR(500),
-
-    CONSTRAINT uc_name UNIQUE (name)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = UTF8MB4;
