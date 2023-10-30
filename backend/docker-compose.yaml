@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0.34
+    container_name: lab-mysql
+    restart: no
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3316:3306"

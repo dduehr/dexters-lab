@@ -1,0 +1,531 @@
+openapi: "3.0.3"
+info:
+  version: 0.0.1
+  title: Projects API
+  description: |-
+    This is the Projects API based on the OpenAPI 3.0 specification.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8090
+paths:
+  /projects:
+    get:
+      description: Find all projects ordered by name
+      operationId: findAllProjects
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Success
+          headers:
+            Pagination-PageCount:
+              $ref: '#/components/headers/Pagination-PageCount'
+            Pagination-CurrentPage:
+              $ref: '#/components/headers/Pagination-CurrentPage'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+    post:
+      description: Create a project
+      operationId: createProject
+      requestBody:
+        description: Project
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProject'
+      responses:
+        '200':
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /projects/{id}:
+    get:
+      description: Find a project by ID
+      operationId: findProjectById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the project
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Project found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /snapshots/{id}:
+    get:
+      description: Find a snapshot by ID
+      operationId: findSnapshotById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the snapshot
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Snapshot found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /snapshots/by-project/{id}:
+    get:
+      description: |
+        Find the snapshots of a project by their project id.
+        The snapshots are ordered by their "createdAt" timestamp.
+      operationId: findSnapshotsByProjectId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - name: id
+          in: path
+          description: ID of project
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Snapshots of the project
+          headers:
+            Pagination-PageCount:
+              $ref: '#/components/headers/Pagination-PageCount'
+            Pagination-CurrentPage:
+              $ref: '#/components/headers/Pagination-CurrentPage'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Snapshot'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /snapshots/by-branch/{id}:
+    get:
+      description: |
+        Find the snapshots of a branch by their branch id.
+        The snapshots are ordered by their "createdAt" timestamp.
+      operationId: findSnapshotsByBranchId
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - name: id
+          in: path
+          description: ID of branch
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Snapshots of the branch
+          headers:
+            Pagination-PageCount:
+              $ref: '#/components/headers/Pagination-PageCount'
+            Pagination-CurrentPage:
+              $ref: '#/components/headers/Pagination-CurrentPage'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Snapshot'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /snapshots/new-branch:
+    post:
+      description: Create a snapshot within a new branch
+      operationId: createSnapshotWithBranch
+      requestBody:
+        description: Work state with branch
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSnapshotWithBranch'
+      responses:
+        '200':
+          description: Created snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /snapshots:
+    post:
+      description: Create a snapshot within an existing branch
+      operationId: createSnapshot
+      requestBody:
+        description: Work state
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSnapshot'
+      responses:
+        '200':
+          description: Created snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /branches/{id}:
+    get:
+      description: Find a branch by ID
+      operationId: findBranchById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the branch
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Branch found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Branch'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+  /branches/by-project/{id}:
+    get:
+      description: Find the branches of a project by the project id. The branches are ordered by name.
+      operationId: findBranchesByProjectId
+      parameters:
+        - name: id
+          in: path
+          description: ID of the project
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Branch'
+          headers:
+            Pagination-PageCount:
+              $ref: '#/components/headers/Pagination-PageCount'
+            Pagination-CurrentPage:
+              $ref: '#/components/headers/Pagination-CurrentPage'
+        '404':
+          description: Not Found, i.e. the project with the specified identifier does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
+components:
+  schemas:
+    IDType:
+      type: string
+      format: uuid
+
+    NameType:
+      type: string
+      maxLength: 255
+
+    CommentType:
+      type: string
+      maxLength: 500
+
+    DataType:
+      type: string
+      maxLength: 500
+
+    Project:
+      allOf:
+        - $ref: '#/components/schemas/NewProject'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              $ref: '#/components/schemas/IDType'
+            defaultBranch:
+              $ref: '#/components/schemas/DefaultBranch'
+
+    NewProject:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/NameType'
+        comment:
+          $ref: '#/components/schemas/CommentType'
+
+    DefaultBranch:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/IDType'
+        name:
+          $ref: '#/components/schemas/NameType'
+
+    Branch:
+      allOf:
+        - $ref: '#/components/schemas/DefaultBranch'
+        - type: object
+          required:
+            - default_branch
+          properties:
+            default_branch:
+              type: boolean
+
+    NewSnapshotWithBranch:
+      type: object
+      required:
+        - projectId
+        - branchName
+        - data
+      properties:
+        projectId:
+          $ref: '#/components/schemas/IDType'
+        branchName:
+          $ref: '#/components/schemas/NameType'
+        data:
+          $ref: '#/components/schemas/DataType'
+        comment:
+          $ref: '#/components/schemas/CommentType'
+
+    NewSnapshot:
+      type: object
+      required:
+        - branchId
+        - data
+      properties:
+        branchId:
+          $ref: '#/components/schemas/IDType'
+        data:
+          $ref: '#/components/schemas/DataType'
+        comment:
+          $ref: '#/components/schemas/CommentType'
+
+    Snapshot:
+      type: object
+      required:
+        - id
+        - branch
+        - data
+        - createdBy
+        - createdAt
+      properties:
+        id:
+          $ref: '#/components/schemas/IDType'
+        branch:
+          $ref: '#/components/schemas/Branch'
+        data:
+          $ref: '#/components/schemas/DataType'
+        comment:
+          $ref: '#/components/schemas/CommentType'
+        createdBy:
+          type: string
+          maxLength: 80
+        createdAt:
+          type: string
+          format: 'date-time'
+
+    Problem:
+      type: object
+      required:
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the problem type.
+        title:
+          type: string
+          description: |
+            A short, summary of the problem type.
+        status:
+          type: integer
+          format: int32
+          description: |
+            The HTTP status code generated by the origin server for this occurrence
+            of the problem.
+          minimum: 100
+          maximum: 600
+          exclusiveMaximum: true
+          example: 503
+        detail:
+          type: string
+          description: |
+            A human readable explanation specific to this occurrence of the
+            problem.
+          example: Connection to database timed out
+        instance:
+          type: string
+          format: uri
+          description: |
+            An absolute URI that identifies the specific occurrence of the problem.
+
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Current page number
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        minimum: 0
+
+    size:
+      name: size
+      in: query
+      description: Limits the number of returned items
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 20
+        minimum: 10
+        maximum: 100
+        multipleOf: 10
+
+  headers:
+    Pagination-PageCount:
+      description: Total number of pages
+      schema:
+        format: int32
+        type: integer
+      style: simple
+
+    Pagination-CurrentPage:
+      description: Returned number of page
+      schema:
+        format: int32
+        type: integer
+      style: simple

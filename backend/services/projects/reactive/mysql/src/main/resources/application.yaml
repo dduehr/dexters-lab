@@ -1,0 +1,10 @@
+server:
+  port: 8090
+
+spring:
+  r2dbc:
+    url: r2dbc:mysql://${DB_HOST:localhost}:${DB_PORT:3316}/${DB_NAME:lab-projects-reactive}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:secret}
+  flyway:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3316}/${DB_NAME:lab-projects-reactive}?createDatabaseIfNotExist=${DB_CREATE_IF_NOT_EXIST:true}

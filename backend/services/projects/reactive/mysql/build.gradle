@@ -1,0 +1,54 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.5'
+	id 'io.spring.dependency-management' version '1.1.3'
+}
+
+group = 'com.example.dijkstras-lab'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+compileJava {
+	options.compilerArgs << '-Xlint:unchecked'
+}
+
+jar {
+	enabled = false
+}
+
+bootJar {
+	archiveBaseName = 'projects-service-mysql-reactive'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation project(":backend:services:projects:reactive:api")
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
+	implementation 'io.asyncer:r2dbc-mysql:1.0.4'
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	implementation 'org.flywaydb:flyway-core:9.22.3'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'org.flywaydb:flyway-mysql'
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:mysql'
+}

@@ -1,0 +1,25 @@
+server:
+  port: 8091
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3316}/${DB_NAME:lab-projects}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:secret}
+    hikari:
+      data-source-properties:
+        allowPublicKeyRetrieval: ${DB_ALLOW_PUBLIC_KEY_RETRIEVAL:false}
+        sslMode: ${DB_SSL_MODE:PREFERRED}
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      time_zone: UTC
+  flyway:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3316}/${DB_NAME:lab-projects}?createDatabaseIfNotExist=${DB_CREATE_IF_NOT_EXIST:true}
+    user: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:secret}
+    out-of-order: false
+    validate-on-migrate: true
