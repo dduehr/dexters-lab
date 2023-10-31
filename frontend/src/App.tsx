@@ -13,10 +13,10 @@ import SnapshotDetails from './routes/SnapshotDetails';
 import SnapshotWithBranchNew from './routes/SnapshotWithBranchNew';
 import SnapshotNew from './routes/SnapshotNew';
 
-import projectsLoader from './loader/projects'
-import projectLoader, { redirectToDefaultBranch } from './loader/project'
-import branchesLoader from './loader/branches'
-import snapshotsLoader from './loader/snapshots'
+import projectsLoader from './routes/loader/projects'
+import projectLoader, { redirectToDefaultBranch } from './routes/loader/project'
+import branchesLoader from './routes/loader/branches'
+import snapshotsLoader from './routes/loader/snapshots'
 
 export default function App() {
   return (

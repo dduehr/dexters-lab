@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs, redirect } from 'react-router-dom';
-import { getApi } from '../services/backend.ts';
-import { Project } from '../generated-sources/ProjectsApi/api.ts';
 import { Guid } from 'guid-typescript';
+import { getApi } from '../../services/backend.ts';
+import { Project } from '../../generated-sources/ProjectsApi/api.ts';
 
 type ProjectLoader = (args: LoaderFunctionArgs) => Promise<Response|Project>;
 

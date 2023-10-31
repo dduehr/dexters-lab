@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from 'react-router-dom';
-import { getApi } from '../services/backend.ts';
-import { Snapshot } from '../generated-sources/ProjectsApi/api.ts';
 import { Guid } from 'guid-typescript';
+import { getApi } from '../../services/backend.ts';
+import { Snapshot } from '../../generated-sources/ProjectsApi/api.ts';
 
 const loader = async ({ params }: LoaderFunctionArgs): Promise<Response|Snapshot> => {
     const { snapshotId } = params;

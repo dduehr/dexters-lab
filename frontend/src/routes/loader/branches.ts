@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from 'react-router-dom';
-import { getApi } from '../services/backend.ts';
-import { Branch } from '../generated-sources/ProjectsApi/api.ts';
 import { Guid } from 'guid-typescript';
+import { getApi } from '../../services/backend.ts';
+import { Branch } from '../../generated-sources/ProjectsApi/api.ts';
 
 const loader = async ({ params }: LoaderFunctionArgs): Promise<Response|Branch[]> => {
     const { projectId } = params;
@@ -10,7 +10,7 @@ const loader = async ({ params }: LoaderFunctionArgs): Promise<Response|Branch[]
         throw new Error(`"${projectId} is not a valid UUID`);
     }   
 
-    const response = await getApi().findBranchesByProjectId(projectId as string);
+    const response = await getApi().findBranchesByProjectId(projectId as string, 0, 20);
 
     return response.data;
 }
