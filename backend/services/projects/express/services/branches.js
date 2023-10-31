@@ -43,7 +43,7 @@ async function findBranchesByProjectId(id, page, size) {
 }
 
 function toDto(branch) {
-    const dto = { ...branch, defaultBranch: branch.id === branch.project_default_branch_id }
+    const dto = { ...branch, default_branch: branch.id === branch.project_default_branch_id }
     delete dto.project_default_branch_id
     return dto
 }
