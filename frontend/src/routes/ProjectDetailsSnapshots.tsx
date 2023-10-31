@@ -20,7 +20,7 @@ export default function ProjectDetailsSnapshots() {
                 <tbody>
                     {snapshots.map(s => (
                         <LinkContainer key={s.id} to={`/projects/${projectId}/branches/${branchId}/snapshots/${s.id}`}>
-                            <tr key={s.id}>
+                            <tr key={s.id} role="button">
                                 <td>{s.comment}</td>
                                 <td>{s.createdBy}</td>
                                 <td>{s.createdAt}</td>

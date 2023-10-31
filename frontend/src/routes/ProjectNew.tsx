@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Form, Link, useNavigate } from "react-router-dom";
 
 export default function ProjectNew() {
+    const navigate = useNavigate();
+
     return (
         <div className="container mt-3">
             <div className="card">
@@ -13,20 +15,20 @@ export default function ProjectNew() {
                     </nav>
                 </div>
                 <div className="card-body">
-                    <form>
+                    <Form method="post">
                         <div className="mb-3">
                             <label htmlFor="name" className="form-label">Name</label>
-                            <input type="input" className="form-control" id="name" />
+                            <input type="input" className="form-control" name="name" />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="comment" className="form-label">Comment</label>
-                            <textarea className="form-control" id="comment" rows={3}></textarea>
+                            <textarea className="form-control" name="comment" rows={3}></textarea>
                         </div>
                         <nav className="navbar-collapse">
-                            <a className="btn btn-primary me-2" role="submit" aria-disabled="true">Save</a>
-                            <Link className="btn btn-secondary" role="cancel" aria-disabled="true" to="/projects">Cancel</Link>
+                            <button className="btn btn-primary me-2" type="submit" aria-disabled="true">Save</button>
+                            <button className="btn btn-secondary" onClick={() => navigate(-1)} aria-disabled="true">Cancel</button>
                         </nav>
-                    </form>
+                    </Form>
                 </div>
             </div>
         </div>

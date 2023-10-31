@@ -10,7 +10,7 @@ const loader = async ({ params }: LoaderFunctionArgs): Promise<Response|Branch[]
         throw new Error(`"${projectId} is not a valid UUID`);
     }   
 
-    const response = await getApi().findBranchesByProjectId(projectId as string, 0, 20);
+    const response = await getApi().findBranchesByProjectId(projectId as string, 0, 100);
 
     return response.data;
 }

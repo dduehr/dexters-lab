@@ -18,7 +18,7 @@ export default function BranchDetails() {
                     <h3>Branch "main"</h3>
                     <form>
                         <div className="card p-3 mb-3">
-                            <h5>Present Snapshot</h5>
+                            <h5>Latest Snapshot</h5>
                             <div className="mb-3">
                                 <label htmlFor="parent" className="form-label">Identifier</label>
                                 <input type="text" className="form-control" id="parent" readOnly
