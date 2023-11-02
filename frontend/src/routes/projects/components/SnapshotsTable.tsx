@@ -1,11 +1,16 @@
-import { Link, useLoaderData, useParams } from "react-router-dom";
-import Pagination from "../components/Pagination";
-import { Snapshot } from "../generated-sources/ProjectsApi";
+import { Link } from "react-router-dom";
+import Pagination from "./Pagination";
 import { LinkContainer } from "react-router-bootstrap";
+import { getApi } from "../../../services/backend";
+import useFetcher from "../../../hooks/useFetcher";
 
-export default function ProjectDetailsSnapshots() {
-    const { projectId, branchId } = useParams();
-    const snapshots = useLoaderData() as Snapshot[];
+type SnapshotsTableProps = {
+    projectId: string,
+    branchId: string
+}
+
+export default function SnapshotsTable({ projectId, branchId }: SnapshotsTableProps) {
+    const { data: snapshots } = useFetcher(() => getApi().findSnapshotsByBranchId(branchId as string, 0, 20))
 
     return (
         <>
@@ -18,7 +23,7 @@ export default function ProjectDetailsSnapshots() {
                     </tr>
                 </thead>
                 <tbody>
-                    {snapshots.map(s => (
+                    {snapshots?.map(s => (
                         <LinkContainer key={s.id} to={`/projects/${projectId}/branches/${branchId}/snapshots/${s.id}`}>
                             <tr key={s.id} role="button">
                                 <td>{s.comment}</td>

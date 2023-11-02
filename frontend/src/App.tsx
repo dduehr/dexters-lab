@@ -1,46 +1,53 @@
 import { Route, redirect } from 'react-router-dom';
 
-import RootLayout from './layouts/RootLayout';
-
+import RootLayout from './routes/RootLayout';
 import Home from './routes/Home';
-import Projects from './routes/Projects';
-import ProjectDetails from './routes/ProjectDetails';
-import ProjectDetailsBranches from './routes/ProjectDetailsBranches';
-import ProjectDetailsSnapshots from './routes/ProjectDetailsSnapshots';
-import ProjectNew from './routes/ProjectNew';
-import BranchDetails from './routes/BranchDetails';
-import SnapshotDetails from './routes/SnapshotDetails';
-import SnapshotWithBranchNew from './routes/SnapshotWithBranchNew';
-import SnapshotNew from './routes/SnapshotNew';
 
-import projectAction from './routes/actions/project'
-import snapshotAction from './routes/actions/snapshot'
-import snapshotWithNewBranchAction from './routes/actions/snapshotWithNewBranch'
+import ProjectsLayout from './routes/projects/ProjectsLayout';
+import Projects from './routes/projects/Projects';
+import ProjectDetails from './routes/projects/ProjectDetails';
+import ProjectNew from './routes/projects/ProjectNew';
+import BranchDetails from './routes/projects/BranchDetails';
+import DefaultBranchRedirect from './routes/projects/components/DefaultBranchRedirect';
+import SnapshotDetails from './routes/projects/SnapshotDetails';
+import SnapshotWithBranchNew from './routes/projects/SnapshotWithBranchNew';
+import SnapshotNew from './routes/projects/SnapshotNew';
 
-import projectsLoader from './routes/loader/projects'
-import projectLoader, { redirectToDefaultBranch } from './routes/loader/project'
-import branchesLoader from './routes/loader/branches'
-import snapshotsLoader from './routes/loader/snapshots'
+import findProjectsOrRedirectToProjectNew from './routes/projects/loader/findProjectsOrRedirectToProjectNew'
+import findProjectById from './routes/projects/loader/findProjectById'
+import findBranchById from './routes/projects/loader/findBranchById'
+import findSnapshotById from './routes/projects/loader/findSnapshotById'
+import findSnapshotsFirstLastByBranchId from './routes/projects/loader/findSnapshotsFirstLastByBranchId'
+
+import createProject from './routes/projects/actions/createProject'
+import createSnapshot from './routes/projects/actions/createSnapshot'
+import createSnapshotWithBranch from './routes/projects/actions/createSnapshotWithBranch'
 
 export default function App() {
   return (
     <Route path="/" element={<RootLayout />}>
       <Route index={true} element={<Home />} />
-      <Route path="projects">
+      <Route path="projects" element={<ProjectsLayout />}>
         <Route index={true} loader={() => redirect("pages/0")} />
-        <Route path="pages/:pageNr" loader={projectsLoader} element={<Projects />} />
-      </Route>
-      <Route path="projects/new" action={projectAction} element={<ProjectNew />} />
-      <Route path="projects/:projectId/branches/new" action={snapshotWithNewBranchAction} loader={projectLoader} element={<SnapshotWithBranchNew />} />
-      <Route path="projects/:projectId" loader={(args) => redirectToDefaultBranch(projectLoader, args)} element={<ProjectDetails />}>
-        <Route path="branches/:branchId/snapshots" loader={branchesLoader} element={<ProjectDetailsBranches />}>
-          <Route index={true} loader={() => redirect("pages/0")} />
-          <Route path="pages/:pageNr" loader={snapshotsLoader} element={<ProjectDetailsSnapshots />} />
+        <Route path="new" action={createProject} element={<ProjectNew />} />
+        <Route path="pages/:pageNr" loader={findProjectsOrRedirectToProjectNew} element={<Projects />} />
+        <Route path=":projectId" loader={findProjectById} id="project">
+          <Route index={true} loader={() => redirect("branches/default")} />
+          <Route path="branches">
+            <Route path="new" action={createSnapshotWithBranch} element={<SnapshotWithBranchNew />} />
+            <Route path="default" element={<DefaultBranchRedirect />} />
+            <Route path=":branchId" loader={findBranchById} id="branch">
+              <Route index={true} loader={findSnapshotsFirstLastByBranchId} element={<BranchDetails />} />
+              <Route path="snapshots">
+                <Route index={true} loader={() => redirect("pages/0")} />
+                <Route path="new" action={createSnapshot} element={<SnapshotNew />} />
+                <Route path=":snapshotId" loader={findSnapshotById} element={<SnapshotDetails />} />
+                <Route path="pages/:pageNr" element={<ProjectDetails />} />
+              </Route>
+            </Route>
+          </Route>
         </Route>
       </Route>
-      <Route path="projects/:projectId/branches/:branchId/snapshots/new" action={snapshotAction} element={<SnapshotNew />} />
-      <Route path="projects/:projectId/branches/:branchId/snapshots/:snapshotId" element={<SnapshotDetails />} />
-      <Route path="projects/:projectId/branches/:branchId" element={<BranchDetails />} />
     </Route>
   );
 }

@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, redirect } from "react-router-dom";
-import { NewSnapshotWithBranch } from "../../generated-sources/ProjectsApi";
-import { getApi } from "../../services/backend";
+import { NewSnapshotWithBranch } from "../../../generated-sources/ProjectsApi";
+import { getApi } from "../../../services/backend";
 
 export default async function todosAction({ request, params }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData())

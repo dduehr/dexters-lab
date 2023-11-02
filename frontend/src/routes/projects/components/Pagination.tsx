@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { range } from '../utils/array'
+import { range } from '../../../utils/array'
 import classNames from 'classnames';
 
 type PaginationProps = {

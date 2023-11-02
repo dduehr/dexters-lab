@@ -1,8 +1,8 @@
 import { LoaderFunctionArgs, redirect } from 'react-router-dom';
 import { Guid } from 'guid-typescript';
-import { getApi } from '../../services/backend.ts';
-import { Snapshot } from '../../generated-sources/ProjectsApi/api.ts';
-import { toInt } from '../../utils/parser.ts';
+import { getApi } from '../../../services/backend.ts';
+import { Snapshot } from '../../../generated-sources/ProjectsApi/api.ts';
+import { toInt } from '../../../utils/parser.ts';
 
 const loader = async ({ params }: LoaderFunctionArgs): Promise<Response|Snapshot[]> => {
     const { projectId, branchId, pageNr: paramsPageNr } = params;
