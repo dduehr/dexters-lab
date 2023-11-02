@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { getApi } from "../../../services/backend";
 import useFetcher from "../../../hooks/useFetcher";
-import ProjectDetailsSnapshots from "./SnapshotsTable";
+import { getApi } from "../../../services/backend";
 
 type BranchesDropEndProps = {
     projectId: string,

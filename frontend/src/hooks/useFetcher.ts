@@ -10,11 +10,10 @@ export default function useFetcher<T>(request: () => Promise<AxiosResponse<T>>) 
         request().then((response) => {
             setData(response.data);
             setLoading(false);
-        })
-            .catch((err) => {
-                setError(err);
-                setLoading(false);
-            });
+        }).catch((err) => {
+            setError(err);
+            setLoading(false);
+        });
     }, [request]);
 
     return { data, loading, error };

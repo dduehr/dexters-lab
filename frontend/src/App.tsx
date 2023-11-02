@@ -1,4 +1,4 @@
-import { Route, redirect } from 'react-router-dom';
+import { Link, Route, redirect } from 'react-router-dom';
 
 import RootLayout from './routes/RootLayout';
 import Home from './routes/Home';
@@ -22,26 +22,27 @@ import findSnapshotsFirstLastByBranchId from './routes/projects/loader/findSnaps
 import createProject from './routes/projects/actions/createProject'
 import createSnapshot from './routes/projects/actions/createSnapshot'
 import createSnapshotWithBranch from './routes/projects/actions/createSnapshotWithBranch'
+import { Branch, Project, Snapshot } from './generated-sources/ProjectsApi';
 
 export default function App() {
   return (
     <Route path="/" element={<RootLayout />}>
       <Route index={true} element={<Home />} />
-      <Route path="projects" element={<ProjectsLayout />}>
+      <Route path="projects" handle={() => 'Projects'} element={<ProjectsLayout />}>
         <Route index={true} loader={() => redirect("pages/0")} />
-        <Route path="new" action={createProject} element={<ProjectNew />} />
+        <Route path="new" handle={() => 'New Project'} action={createProject} element={<ProjectNew />} />
         <Route path="pages/:pageNr" loader={findProjectsOrRedirectToProjectNew} element={<Projects />} />
-        <Route path=":projectId" loader={findProjectById} id="project">
+        <Route path=":projectId" handle={(data: Project) => data.name} loader={findProjectById} id="project">
           <Route index={true} loader={() => redirect("branches/default")} />
           <Route path="branches">
-            <Route path="new" action={createSnapshotWithBranch} element={<SnapshotWithBranchNew />} />
+            <Route path="new" handle={() => 'New Branch'} action={createSnapshotWithBranch} element={<SnapshotWithBranchNew />} />
             <Route path="default" element={<DefaultBranchRedirect />} />
-            <Route path=":branchId" loader={findBranchById} id="branch">
-              <Route index={true} loader={findSnapshotsFirstLastByBranchId} element={<BranchDetails />} />
+            <Route path=":branchId" handle={(data: Branch) => data.name} loader={findBranchById} id="branch">
+              <Route index={true} handle={() => 'Branch Details'} loader={findSnapshotsFirstLastByBranchId} element={<BranchDetails />} />
               <Route path="snapshots">
                 <Route index={true} loader={() => redirect("pages/0")} />
-                <Route path="new" action={createSnapshot} element={<SnapshotNew />} />
-                <Route path=":snapshotId" loader={findSnapshotById} element={<SnapshotDetails />} />
+                <Route path="new" handle={() => 'New Snapshot'} action={createSnapshot} element={<SnapshotNew />} />
+                <Route path=":snapshotId" handle={(data: Snapshot) => data.createdAt} loader={findSnapshotById} element={<SnapshotDetails />} />
                 <Route path="pages/:pageNr" element={<ProjectDetails />} />
               </Route>
             </Route>
