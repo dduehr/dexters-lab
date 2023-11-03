@@ -1,12 +1,12 @@
-import { Link, useLoaderData, useParams } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import Pagination from "./components/Pagination";
 import { Project } from "../../generated-sources/ProjectsApi";
-import { toInt } from "../../utils/parser";
+import { Page } from "../../types/page";
 
 export default function Projects() {
-    const { pageNr } = useParams();
-    const pageCount = 3;  // ToDo read page count from response header in loader function
-    const projects = useLoaderData() as Project[]
+    const page = useLoaderData() as Page<Project[]>
+
+    // TODO: if page.nr == 0 && page.data.length == 0 redirect to "/projects/new"
 
     return (
         <>
@@ -18,7 +18,7 @@ export default function Projects() {
                     </tr>
                 </thead>
                 <tbody>
-                    {projects.map((project) => (
+                    {page.data.map((project) => (
                         <tr key={project.id}>
                             <td><Link to={`/projects/${project.id}`}>{project.name}</Link></td>
                             <td>{project.comment}</td>
@@ -29,7 +29,7 @@ export default function Projects() {
             <nav className="navbar">
                 <div className="container-fluid">
                     <Link className="btn btn-primary" role="button" aria-disabled="true" to="/projects/new">New Project</Link>
-                    <Pagination basePath="/projects/page" pageNr={toInt(pageNr)} pageCount={pageCount} />
+                    <Pagination basePath="/projects/pages" pageNr={page.nr} pageCount={page.count} />
                 </div>
             </nav>
         </>

@@ -9,22 +9,25 @@ type PaginationProps = {
 }
 
 export default function Pagination({ basePath, pageNr, pageCount }: PaginationProps) {
+
+    console.log(basePath)
+
     return (
         <ul className="pagination ">
-            <li key='prev' className={classNames('page-item', { 'disabled': pageNr <= 0 })}>
-                <Link className="page-link" to={`${basePath}/${pageNr - 1}`} aria-label="Previous">
+            <li key='prev' className={classNames('page-item', { 'disabled': +pageNr <= 0 })}>
+                <Link className="page-link" to={`${basePath}/${+pageNr - 1}`} aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </Link>
             </li>
-            {range(pageCount).map(i => (
-                <li key={`page ${i}`} className={classNames('page-item', { 'active': i === pageNr })}>
+            {range(+pageCount).map(i => (
+                <li key={`page ${i}`} className={classNames('page-item', { 'active pe-none': i == pageNr })}>
                     <Link className="page-link" to={`${basePath}/${i}`}>
                         {i + 1}
                     </Link>
                 </li>))
             }
-            <li key='next' className={classNames('page-item', { 'disabled': pageNr + 1 >= pageCount })}>
-                <Link className="page-link" to={`${basePath}/${pageNr + 1}`} aria-label="Next">
+            <li key='next' className={classNames('page-item', { 'disabled': +pageNr + 1 >= pageCount })}>
+                <Link className="page-link" to={`${basePath}/${+pageNr + 1}`} aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </Link>
             </li>

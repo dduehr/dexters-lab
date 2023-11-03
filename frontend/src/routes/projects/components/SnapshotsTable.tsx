@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import { LinkContainer } from "react-router-bootstrap";
 import { getApi } from "../../../services/backend";
-import useFetcher from "../../../hooks/useFetcher";
+import usePageFetcher from "../../../hooks/usePageFetcher";
 
 type SnapshotsTableProps = {
     projectId: string,
@@ -10,7 +10,7 @@ type SnapshotsTableProps = {
 }
 
 export default function SnapshotsTable({ projectId, branchId }: SnapshotsTableProps) {
-    const { data: snapshots } = useFetcher(() => getApi().findSnapshotsByBranchId(branchId as string, 0, 20))
+    const { page } = usePageFetcher(() => getApi().findSnapshotsByBranchId(branchId as string, 0, 10))
 
     return (
         <>
@@ -23,7 +23,7 @@ export default function SnapshotsTable({ projectId, branchId }: SnapshotsTablePr
                     </tr>
                 </thead>
                 <tbody>
-                    {snapshots?.map(s => (
+                    {page?.data?.map(s => (
                         <LinkContainer key={s.id} to={`/projects/${projectId}/branches/${branchId}/snapshots/${s.id}`}>
                             <tr key={s.id} role="button">
                                 <td>{s.comment}</td>
@@ -37,7 +37,7 @@ export default function SnapshotsTable({ projectId, branchId }: SnapshotsTablePr
             <nav className="navbar">
                 <div className="container-fluid">
                     <Link className="btn btn-primary" role="button" aria-disabled="true" to={`/projects/${projectId}/branches/${branchId}/snapshots/new`}>New Snapshot</Link>
-                    <Pagination basePath={`/projects/${projectId}/branches/${branchId}/snapshots/pages`} pageNr={1} pageCount={3} />
+                    <Pagination basePath={`/projects/${projectId}/branches/${branchId}/snapshots/pages`} pageNr={page?.nr || 0} pageCount={page?.count || 1} />
                 </div>
             </nav>
         </>

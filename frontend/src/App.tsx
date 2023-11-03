@@ -1,4 +1,4 @@
-import { Link, Route, redirect } from 'react-router-dom';
+import { Route, redirect } from 'react-router-dom';
 
 import RootLayout from './routes/RootLayout';
 import Home from './routes/Home';
@@ -13,7 +13,7 @@ import SnapshotDetails from './routes/projects/SnapshotDetails';
 import SnapshotWithBranchNew from './routes/projects/SnapshotWithBranchNew';
 import SnapshotNew from './routes/projects/SnapshotNew';
 
-import findProjectsOrRedirectToProjectNew from './routes/projects/loader/findProjectsOrRedirectToProjectNew'
+import findProjects from './routes/projects/loader/findProjects'
 import findProjectById from './routes/projects/loader/findProjectById'
 import findBranchById from './routes/projects/loader/findBranchById'
 import findSnapshotById from './routes/projects/loader/findSnapshotById'
@@ -31,7 +31,7 @@ export default function App() {
       <Route path="projects" handle={() => 'Projects'} element={<ProjectsLayout />}>
         <Route index={true} loader={() => redirect("pages/0")} />
         <Route path="new" handle={() => 'New Project'} action={createProject} element={<ProjectNew />} />
-        <Route path="pages/:pageNr" loader={findProjectsOrRedirectToProjectNew} element={<Projects />} />
+        <Route path="pages/:pageNr" loader={findProjects} element={<Projects />} />
         <Route path=":projectId" handle={(data: Project) => data.name} loader={findProjectById} id="project">
           <Route index={true} loader={() => redirect("branches/default")} />
           <Route path="branches">
