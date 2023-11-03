@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "gen-api": "openapi-generator-cli generate -i ../openapi.yaml -o build/generated-sources/ProjectsApi -g javascript",
+    "gen-api": "openapi-generator-cli generate -i openapi.yaml -o build/generated-sources/ProjectsApi -g javascript",
     "postinstall": "npm run gen-api"
   },
   "dependencies": {

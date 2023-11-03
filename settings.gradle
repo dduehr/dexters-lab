@@ -1,4 +1,0 @@
-rootProject.name = 'dijkstras-lab'
-
-include 'frontend'
-include 'backend:services:projects:express'
