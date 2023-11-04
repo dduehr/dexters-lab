@@ -1,3 +1,17 @@
+.top-navigation {
+    background-color: #01354d;
+}
+ 
+.top-navigation .navbar-brand,
+.top-navigation .navbar-text {
+    color: whitesmoke;
+}
+
+.dexter .img-responsive {
+    display: inline-block;
+  }
+
 nav {
     --bs-breadcrumb-divider: '>';
 }
+

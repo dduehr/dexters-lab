@@ -1,11 +1,9 @@
-import Card from 'react-bootstrap/Card';
-import Image from 'react-bootstrap/Image';
-import dexter from '../assets/dexter-landscape.svg';
+import dexter from '../assets/dexter.svg';
 
 export default function Home() {
     return (
-        <Card>
-            <Image src={dexter} />
-        </Card>
+        <div className="col-sm-12 text-center">
+            <img className="dexter" src={dexter} />
+        </div>
     );
 }
