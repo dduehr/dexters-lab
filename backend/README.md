@@ -1,3 +1,8 @@
-# Express
+# Dexter's Laboratory - Backend
 
-DEBUG=express:* npm run start
+Install and start the backend:
+
+```sh
+npm install
+npm start
+```
