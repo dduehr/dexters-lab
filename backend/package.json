@@ -3,11 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "gen-api": "openapi-generator-cli generate -i openapi.yaml -o build/generated-sources/ProjectsApi -g javascript"
+    "start": "node ./bin/www"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.7.0",
     "body-parser": "^1.20.2",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
