@@ -2,34 +2,49 @@ const uuid = require('uuid')
 const app = require('../app')
 const config = require('../configuration')
 const http = require('./http')
+const object = require('./object')
 const db = require('./db')
 
 app.post('/snapshots', async (req, res) => {
-    try {
-        const response = await createSnapshot(req.body)
-        res.json(response)
-    } catch ({ code }) {
-        res.status(500).send(code)
+    const missingFields = http.missingFields(req.body, ['branchId', 'data'])
+    if (!object.isEmpty(missingFields)) {
+        res.problem(400, 'BAD_REQUEST', missingFields)
+    } else {
+        try {
+            const response = await createSnapshot(req.body)
+            res.json(response)
+        } catch ({ code }) {
+            res.problem(500, code)
+        }
     }
 })
 
 app.post('/snapshots/new-branch', async (req, res) => {
-    try {
-        await db.run('BEGIN')
-        const response = await createSnapshotWithBranch(req.body)
-        await db.run('COMMIT')
-        res.json(response)
-    } catch ({ code }) {
-        await db.run('ROLLBACK')
-        switch (code) {
-            case 'APP_PROJECT_NOT_FOUND':
-                res.status(400).send(code)
-                break
-            case 'SQLITE_CONSTRAINT':
-                res.status(409).send(code)
-                break
-            default:
-                res.status(500).send(code)
+    const missingFields = http.missingFields(req.body, ['projectId', 'branchName', 'data'])
+    if (!object.isEmpty(missingFields)) {
+        res.problem(400, 'BAD_REQUEST', missingFields)
+    } else {
+        try {
+            await db.run('BEGIN')
+            const response = await createSnapshotWithBranch(req.body)
+            await db.run('COMMIT')
+            res.json(response)
+        } catch ({ code }) {
+            await db.run('ROLLBACK')
+            switch (code) {
+                case 'APP_PROJECT_NOT_FOUND':
+                    res.problem(400, code, {
+                        projectId: `A project with the ID '${req.body.projectId}' was not found`
+                    })
+                    break
+                case 'SQLITE_CONSTRAINT':
+                    res.problem(409, code, {
+                        branchName: `A branch with the name '${req.body.branchName}' already exists for this project`
+                    })
+                    break
+                default:
+                    res.problem(500, code)
+            }
         }
     }
 })
@@ -40,7 +55,7 @@ app.get('/snapshots/:id', async (req, res) => {
         const snapshot = await findSnapshotById(id)
         res.status(snapshot ? 200 : 404).json(snapshot)
     } catch ({ code }) {
-        res.status(500).send(code)
+        res.problem(500, code)
     }
 })
 
@@ -51,7 +66,7 @@ app.get('/snapshots/by-branch/:id', async (req, res) => {
         const [response, count] = await findSnapshotsByBranchId(id, page, size)
         res.set(http.paginationHeader(page, size, count)).json(response)
     } catch ({ code }) {
-        res.status(500).send(code)
+        res.problem(500, code)
     }
 })
 
@@ -62,8 +77,8 @@ app.get('/snapshots/by-project/:id', async (req, res) => {
         const [response, count] = await findSnapshotsByProjectId(id, page, size)
         res.set(http.paginationHeader(page, size, count)).json(response)
     } catch ({ code }) {
-    res.status(500).send(code)
-}
+        res.problem(500, code)
+    }
 })
 
 async function createSnapshot(dto) {
@@ -96,7 +111,7 @@ async function createSnapshotWithBranch(dto) {
         await db.run('UPDATE project SET default_branch_id = ? WHERE id = ?',
             project.default_branch_id, projectId)
     }
-    
+
     const snapshot = {
         id: uuid.v4(), branchId: branch.id, data: data, comment: comment,
         createdBy: '<unknown>', createdAt: new Date().toISOString()

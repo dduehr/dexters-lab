@@ -10,7 +10,7 @@ app.get('/branches/:id', async (req, res) => {
         const branch = await findBranchById(id)
         res.status(branch ? 200 : 404).json(branch)
     } catch ({ code }) {
-        res.status(500).send(code);
+        res.problem(500, code)
     }
 });
 
@@ -21,7 +21,7 @@ app.get('/branches/by-project/:id', async (req, res) => {
         const [response, count] = await findBranchesByProjectId(id, page, size)
         res.set(http.paginationHeader(page, size, count)).json(response)
     } catch ({ code }) {
-        res.status(500).send(code);
+        res.problem(500, code)
     }
 });
 

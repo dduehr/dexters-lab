@@ -2,6 +2,7 @@ const uuid = require('uuid')
 const app = require('../app')
 const config = require('../configuration')
 const http = require('./http')
+const object = require('./object')
 const db = require('./db')
 
 app.get('/projects', async (req, res) => {
@@ -10,7 +11,7 @@ app.get('/projects', async (req, res) => {
         const [response, count] = await findAllProjects(page, size)
         res.set(http.paginationHeader(page, size, count)).json(response)
     } catch ({ code }) {
-        res.status(500).send(code);
+        res.problem(500, code)
     }
 });
 
@@ -20,21 +21,28 @@ app.get('/projects/:id', async (req, res) => {
         const response = await findProjectById(id)
         res.status(response ? 200 : 404).json(response)
     } catch ({ code }) {
-        res.status(500).send(code);
+        res.problem(500, code)
     }
 });
 
 app.post('/projects', async (req, res) => {
-    try {
-        const response = await createProject(req.body)
-        res.json(response)
-    } catch ({ code }) {
-        switch (code) {
-            case 'SQLITE_CONSTRAINT':
-                res.status(409).send(code);
-                break;
-            default:
-                res.status(500).send(code);
+    const missingFields = http.missingFields(req.body, ['name'])
+    if (!object.isEmpty(missingFields)) {
+        res.problem(400, 'BAD_REQUEST', missingFields)
+    } else {
+        try {
+            const response = await createProject(req.body)
+            res.json(response)
+        } catch ({ code }) {
+            switch (code) {
+                case 'SQLITE_CONSTRAINT':
+                    res.problem(409, code, {
+                        name: `A project with the name '${req.body.name}' already exists`
+                    })
+                    break;
+                default:
+                    res.problem(500, code)
+            }
         }
     }
 });

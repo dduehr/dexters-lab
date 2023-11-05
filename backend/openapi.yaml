@@ -489,6 +489,15 @@ components:
           format: uri
           description: |
             An absolute URI that identifies the specific occurrence of the problem.
+        details:
+          type: object
+          description: |
+            Map of field names and error messages
+          additionalProperties:
+            type: string
+          example:
+            name: The name is already in use
+            comment: The comment exceeds the maximum length of 500 characters
 
   parameters:
     page:

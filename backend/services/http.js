@@ -5,6 +5,14 @@ function paginationHeader(page, size, count) {
     }
 }
 
+function missingFields(object, fields) {
+    return fields.reduce((acc, key) => ({
+        ...acc,
+        ...(!object[key] && { [key]: `Field '${key}' is mandatory` })
+    }), {})
+}
+
 module.exports = {
-    paginationHeader
+    paginationHeader,
+    missingFields
 }
