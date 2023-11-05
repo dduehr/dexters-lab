@@ -33,7 +33,9 @@ app.response.problem = function (status, message, details) {
   })
 }
 
-app.listen(config.serverPort, console.log(`app Listening on port ${config.serverPort}`))
+const port = process.env.PORT || config.serverPort 
+
+app.listen(port, console.log(`app Listening on port ${port}`))
 
 module.exports = app, config
 

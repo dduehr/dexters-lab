@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { range } from '../../../utils/array'
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
+import { range } from '../../../utils/array';
 
 type PaginationProps = {
     basePath: string;
@@ -9,9 +9,6 @@ type PaginationProps = {
 }
 
 export default function Pagination({ basePath, pageNr, pageCount }: PaginationProps) {
-
-    console.log(basePath)
-
     return (
         <ul className="pagination ">
             <li key='prev' className={classNames('page-item', { 'disabled': +pageNr <= 0 })}>
