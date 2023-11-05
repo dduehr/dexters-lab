@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { getApi } from "../../../services/backend";
-import { NewSnapshot } from "../../../generated-sources/ProjectsApi";
+import { NewSnapshot, Problem } from "../../../generated-sources/ProjectsApi";
+import { AxiosError } from "axios";
 
 export default async function todosAction({ request, params }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData())
@@ -12,7 +13,11 @@ export default async function todosAction({ request, params }: ActionFunctionArg
     comment: formData.comment
   } as NewSnapshot
 
-  await getApi().createSnapshot(newSnapshot)
-
-  return redirect(`/projects/${projectId}/branches/${branchId}`)
+  try {
+    await getApi().createSnapshot(newSnapshot)
+    return redirect(`/projects/${projectId}/branches/${branchId}`)
+  } catch (error) {
+    const problem = (<AxiosError>error).response!.data as Problem
+    return problem
+  }
 }

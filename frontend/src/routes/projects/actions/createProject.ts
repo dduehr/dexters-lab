@@ -1,8 +1,9 @@
 import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { getApi } from "../../../services/backend";
-import { NewProject } from "../../../generated-sources/ProjectsApi";
+import { NewProject, Problem, Project } from "../../../generated-sources/ProjectsApi";
+import { AxiosError } from "axios";
 
-export default async function todosAction({ request }: ActionFunctionArgs): Promise<Response> {
+export default async function todosAction({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData())
 
   const newProject = {
@@ -10,8 +11,12 @@ export default async function todosAction({ request }: ActionFunctionArgs): Prom
     comment: formData.comment
   } as NewProject
 
-  const response = await getApi().createProject(newProject)
-  const project = response.data
-
-  return redirect(`/projects/${project.id}`)
+  try {
+    const response = await getApi().createProject(newProject)
+    const project = response.data as Project
+    return redirect(`/projects/${project.id}`)
+  } catch (error) {
+    const problem = (<AxiosError>error).response!.data as Problem
+    return problem
+  }
 }
