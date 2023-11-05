@@ -1,17 +1,56 @@
-.top-navigation {
-    background-color: #01354d;
-}
- 
-.top-navigation .navbar-brand,
-.top-navigation .navbar-text {
-    color: whitesmoke;
+#top-navigation {
+    background-color: #9b44b9;
+    margin-top: -16px;
+    margin-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
-.dexter .img-responsive {
+#top-navigation .navbar-brand {
+    color: black;
+}
+
+#top-navigation a {
+    margin-bottom: -10px;
+}
+
+#top-navigation img {
+    margin-top: 6px;
+}
+
+#top-navigation .ff-baby-kruffy {
+    font-size: xx-large;
+}
+
+
+#top-navigation .ff-data-70 {
+    font-size: xxx-large;
+}
+
+.inline-block {
     display: inline-block;
-  }
+}
+
+.ff-baby-kruffy {
+    font-family: 'Baby Kruffy';
+    padding-top: 0;
+}
+
+.ff-data-70 {
+    font-family: 'Data 70';
+}
 
 nav {
     --bs-breadcrumb-divider: '>';
+}
+
+@font-face {
+    font-family: 'Baby Kruffy';
+    src: local('Baby Kruffy'), url(./fonts/BabyKruffyRegular.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Data 70';
+    src: local('Data 70'), url(./fonts/Data70Regular.otf) format('opentype');
 }
 

@@ -1,6 +1,6 @@
 export default function TopMenuBar() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light shadow mb-5">
+        <nav id="top-menu" className="navbar navbar-expand-lg navbar-light shadow mb-5">
             <div className="container-fluid justify-content-center">
                 <ul className="navbar-nav flex-nowrap">
                     <li className="nav-item">

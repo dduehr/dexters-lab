@@ -1,18 +1,18 @@
-import swagger from '../../assets/swagger.svg'
+import swagger from '../../assets/swagger-icon.png'
 
 export default function TopNavigationBar() {
     return (
-        <nav className="navbar navbar-expand-lg top-navigation">
-            <div className="container-fluid">
+        <nav id="top-navigation" className="navbar navbar-expand-lg">
+            <div className="container-fluid py-n4">
                 <a className="navbar-brand fw-bold"
                     href="https://www.youtube.com/channel/UCX9EuLuarfDjJRYt9l0Bbjg"
                     target="_blank">
-                    Dexter's Laboratory
+                    <span className="ff-baby-kruffy">DEXTER'S</span> <span className="ff-data-70">Laboratory</span>&trade;
                 </a>
                 <a className="navbar-brand"
                     href="http://localhost:8099/swagger-ui.html"
                     target="_blank">
-                    <img src={swagger} height="32" />
+                    <img src={swagger} />
                 </a>
             </div>
         </nav>
