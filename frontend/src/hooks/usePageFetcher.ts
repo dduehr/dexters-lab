@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios"
 import { Page } from "../types/page";
 
-export default function useFetcher<T>(request: () => Promise<AxiosResponse<T>>) {
+export default function usePageFetcher<T>(request: () => Promise<AxiosResponse<T>>) {
     const [page, setPage] = useState<Page<T>>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,7 +19,7 @@ export default function useFetcher<T>(request: () => Promise<AxiosResponse<T>>) 
             setError(err);
             setLoading(false);
         });
-    }, [loading, error]);
+    }, [request]);
 
     return { page, loading, error };
 }
