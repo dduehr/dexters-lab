@@ -32,12 +32,12 @@ export default function App() {
         <Route index={true} loader={() => redirect("pages/0")} />
         <Route path="new" handle={{ crumb: () => 'New Project' }} action={createProject} element={<ProjectNew />} />
         <Route path="pages/:pageNr" loader={findProjects} element={<Projects />} />
-        <Route path=":projectId" handle={{ crumb: (data: Project) => data.name }} loader={findProjectById} id="project">
+        <Route path=":projectId" handle={{ crumb: (data: Project) => data.name, active: (data: Project) => data.defaultBranch }} loader={findProjectById} id="project">
           <Route index={true} loader={() => redirect("branches/default")} />
           <Route path="branches">
             <Route path="new" handle={{ crumb: () => 'New Branch' }} action={createSnapshotWithBranch} element={<SnapshotWithBranchNew />} />
             <Route path="default" element={<DefaultBranchRedirect />} />
-            <Route path=":branchId" handle={{ crumb: (data: Branch) => data.name }} loader={findBranchById} id="branch">
+            <Route path=":branchId" handle={{ crumb: (data: Branch) => data.name, subPath: () => 'snapshots' }} loader={findBranchById} id="branch">
               <Route index={true} handle={{ crumb: () => 'Branch Details' }} loader={findSnapshotsFirstLastByBranchId} element={<BranchDetails />} />
               <Route path="snapshots">
                 <Route index={true} loader={() => redirect("pages/0")} />
