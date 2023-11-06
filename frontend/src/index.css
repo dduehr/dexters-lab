@@ -22,9 +22,14 @@
     font-size: xx-large;
 }
 
-
 #top-navigation .ff-data-70 {
     font-size: xxx-large;
+}
+
+#top-navigation .ff-data-70:after {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    content: '\2122';
 }
 
 .inline-block {
@@ -53,4 +58,3 @@ nav {
     font-family: 'Data 70';
     src: local('Data 70'), url(./fonts/Data70Regular.otf) format('opentype');
 }
-

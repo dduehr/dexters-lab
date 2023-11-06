@@ -7,7 +7,7 @@ export default function TopNavigationBar() {
                 <a className="navbar-brand fw-bold"
                     href="https://www.youtube.com/channel/UCX9EuLuarfDjJRYt9l0Bbjg"
                     target="_blank">
-                    <span className="ff-baby-kruffy">DEXTER'S</span> <span className="ff-data-70">Laboratory</span>&trade;
+                    <span className="ff-baby-kruffy">DEXTER'S</span> <span className="ff-data-70">Laboratory</span>
                 </a>
                 <a className="navbar-brand"
                     href="http://localhost:8099/swagger-ui.html"
