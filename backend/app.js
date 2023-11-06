@@ -33,10 +33,10 @@ app.response.problem = function (status, message, details) {
   })
 }
 
+app.listen(config.serverPort, console.log(`app Listening on port ${config.serverPort}`))
+
 module.exports = app, config
 
 require('./services/projects')
 require('./services/branches')
 require('./services/snapshots')
-
-app.listen(config.serverPort, console.log(`app Listening on port ${config.serverPort}`))
