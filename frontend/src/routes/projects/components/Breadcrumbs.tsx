@@ -1,16 +1,16 @@
 import { Link, useMatches } from "react-router-dom";
 import { init } from "../../../utils/array";
 
-export type Breadcrumb = (data: unknown) => string
+export type Breadcrumb = { crumb: (data: unknown) => string }
 
 export default function Breadcrumbs() {
     const matches = useMatches()
 
     const [crumbs, current] = init(matches
-        .filter(match => match.handle)
+        .filter(match => (match.handle as Breadcrumb | undefined)?.crumb)
         .map(match => {
-            const crumb = match.handle as Breadcrumb
-            return { pathname: match.pathname, text: crumb(match.data) }
+            const breadcrumb = match.handle as Breadcrumb
+            return { pathname: match.pathname, text: breadcrumb.crumb(match.data) }
         }))
 
     return (
