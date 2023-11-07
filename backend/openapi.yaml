@@ -206,6 +206,37 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
 
+  /snapshots/by-branch/{id}/recent:
+    get:
+      description: Find the recent snapshot of a branch.
+      operationId: findRecentSnapshotByBranchId
+      parameters:
+        - name: id
+          in: path
+          description: ID of the branch
+          required: true
+          schema:
+            $ref: '#/components/schemas/IDType'
+      responses:
+        '200':
+          description: Snapshot found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Snapshot'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+
   /snapshots/new-branch:
     post:
       description: Create a snapshot within a new branch
