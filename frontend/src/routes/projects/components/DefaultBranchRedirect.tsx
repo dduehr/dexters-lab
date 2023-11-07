@@ -1,5 +1,5 @@
 import { useNavigate, useRouteLoaderData } from "react-router-dom";
-import { Project } from "../../../generated-sources/ProjectsApi";
+import { Project } from "../../../generated/openapi/projects";
 import { useEffect } from "react";
 
 export default function DefaultBranchRedirect() {

@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, redirect } from "react-router-dom";
-import { NewSnapshotWithBranch, Problem } from "../../../generated-sources/ProjectsApi";
+import { NewSnapshotWithBranch, Problem } from "../../../generated/openapi/projects";
 import { getApi } from "../../../services/backend";
 import { AxiosError } from "axios";
 

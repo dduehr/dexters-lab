@@ -1,4 +1,4 @@
-import { Configuration, DefaultApi } from '../generated-sources/ProjectsApi';
+import { Configuration, DefaultApi } from '../generated/openapi/projects';
 
 export function getApi(): DefaultApi {
     const baseUrl = 'http://localhost:8099';

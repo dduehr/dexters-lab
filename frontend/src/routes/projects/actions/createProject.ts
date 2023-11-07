@@ -1,6 +1,6 @@
 import { ActionFunctionArgs, redirect } from "react-router-dom";
 import { getApi } from "../../../services/backend";
-import { NewProject, Problem, Project } from "../../../generated-sources/ProjectsApi";
+import { NewProject, Problem, Project } from "../../../generated/openapi/projects";
 import { AxiosError } from "axios";
 
 export default async function todosAction({ request }: ActionFunctionArgs) {

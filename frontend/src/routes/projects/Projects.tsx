@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "react-router-dom";
 import Pagination from "./components/Pagination";
-import { Project } from "../../generated-sources/ProjectsApi";
+import { Project } from "../../generated/openapi/projects";
 import { Page } from "../../types/page";
 
 export default function Projects() {

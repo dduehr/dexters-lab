@@ -1,5 +1,5 @@
 import { Route, redirect } from 'react-router-dom';
-import { Branch, Project, Snapshot } from './generated-sources/ProjectsApi';
+import { Branch, Project, Snapshot } from './generated/openapi/projects';
 
 import RootLayout from './routes/RootLayout';
 import Home from './routes/Home';

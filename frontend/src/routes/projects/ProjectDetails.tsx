@@ -1,5 +1,5 @@
 import { useParams, useRouteLoaderData } from "react-router-dom";
-import { Project } from "../../generated-sources/ProjectsApi";
+import { Project } from "../../generated/openapi/projects";
 import BranchesDropEnd from "./components/BranchesDropEnd";
 import SnapshotsTable from "./components/SnapshotsTable";
 

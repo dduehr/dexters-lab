@@ -1,5 +1,5 @@
 import { Form, useActionData, useNavigate } from "react-router-dom";
-import { Problem } from "../../generated-sources/ProjectsApi";
+import { Problem } from "../../generated/openapi/projects";
 import { dispatch } from "../../utils/state";
 import classNames from "classnames";
 import { useState } from "react";

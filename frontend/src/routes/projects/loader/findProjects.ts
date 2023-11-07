@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs, redirect } from 'react-router-dom';
 import { toInt } from '../../../utils/parser.ts';
 import { getApi } from '../../../services/backend.ts';
-import { Project } from '../../../generated-sources/ProjectsApi/api.ts';
+import { Project } from '../../../generated/openapi/projects/api.ts';
 import { Page } from '../../../types/page.ts';
 
 const loader = async ({ params }: LoaderFunctionArgs): Promise<Response | Page<Project[]>> => {
