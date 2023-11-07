@@ -1,5 +1,4 @@
 import swagger from '../../assets/swagger-icon.png'
-import config from '../../../configuration.json'
 
 export default function TopNavigationBar() {
     return (
@@ -11,7 +10,7 @@ export default function TopNavigationBar() {
                     <span className="ff-baby-kruffy">DEXTER'S</span> <span className="ff-data-70">Laboratory</span>
                 </a>
                 <a className="navbar-brand"
-                    href={`${config.backendUrl}/swagger-ui.html`}
+                    href={`${import.meta.env.VITE_API_ENDPOINT}/swagger-ui.html`}
                     target="_blank">
                     <img src={swagger} />
                 </a>
