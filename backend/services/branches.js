@@ -4,7 +4,7 @@ const config = require('../configuration')
 const http = require('./http')
 const db = require('./db')
 
-app.get('/branches/:id', async (req, res) => {
+app.get('/api/branches/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const branch = await findBranchById(id)
@@ -14,7 +14,7 @@ app.get('/branches/:id', async (req, res) => {
     }
 });
 
-app.get('/branches/by-project/:id', async (req, res) => {
+app.get('/api/branches/by-project/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const [page, size] = [req.query.page || 0, req.query.size || config.defaultPageSize]

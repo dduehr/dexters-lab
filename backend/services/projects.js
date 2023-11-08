@@ -5,7 +5,7 @@ const http = require('./http')
 const object = require('./object')
 const db = require('./db')
 
-app.get('/projects', async (req, res) => {
+app.get('/api/projects', async (req, res) => {
     try {
         const [page, size] = [req.query.page || 0, req.query.size || config.defaultPageSize]
         const [response, count] = await findAllProjects(page, size)
@@ -15,7 +15,7 @@ app.get('/projects', async (req, res) => {
     }
 });
 
-app.get('/projects/:id', async (req, res) => {
+app.get('/api/projects/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const response = await findProjectById(id)
@@ -25,7 +25,7 @@ app.get('/projects/:id', async (req, res) => {
     }
 });
 
-app.post('/projects', async (req, res) => {
+app.post('/api/projects', async (req, res) => {
     const missingFields = http.missingFields(req.body, ['name'])
     if (!object.isEmpty(missingFields)) {
         res.problem(400, 'BAD_REQUEST', missingFields)

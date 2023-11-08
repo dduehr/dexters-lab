@@ -5,7 +5,7 @@ const http = require('./http')
 const object = require('./object')
 const db = require('./db')
 
-app.post('/snapshots', async (req, res) => {
+app.post('/api/snapshots', async (req, res) => {
     const missingFields = http.missingFields(req.body, ['branchId', 'data'])
     if (!object.isEmpty(missingFields)) {
         res.problem(400, 'BAD_REQUEST', missingFields)
@@ -19,7 +19,7 @@ app.post('/snapshots', async (req, res) => {
     }
 })
 
-app.post('/snapshots/new-branch', async (req, res) => {
+app.post('/api/snapshots/new-branch', async (req, res) => {
     const missingFields = http.missingFields(req.body, ['projectId', 'branchName', 'data'])
     if (!object.isEmpty(missingFields)) {
         res.problem(400, 'BAD_REQUEST', missingFields)
@@ -49,7 +49,7 @@ app.post('/snapshots/new-branch', async (req, res) => {
     }
 })
 
-app.get('/snapshots/:id', async (req, res) => {
+app.get('/api/snapshots/:id', async (req, res) => {
     try {
         const { id } = req.params
         const snapshot = await findSnapshotById(id)
@@ -59,7 +59,7 @@ app.get('/snapshots/:id', async (req, res) => {
     }
 })
 
-app.get('/snapshots/by-branch/:id', async (req, res) => {
+app.get('/api/snapshots/by-branch/:id', async (req, res) => {
     try {
         const { id } = req.params
         const [page, size] = [req.query.page || 0, req.query.size || config.defaultPageSize]
@@ -70,7 +70,7 @@ app.get('/snapshots/by-branch/:id', async (req, res) => {
     }
 })
 
-app.get('/snapshots/by-branch/:id/recent', async (req, res) => {
+app.get('/api/snapshots/by-branch/:id/recent', async (req, res) => {
     try {
         const { id } = req.params
         const response = await findRecentSnapshotByBranchId(id)
@@ -80,7 +80,7 @@ app.get('/snapshots/by-branch/:id/recent', async (req, res) => {
     }
 })
 
-app.get('/snapshots/by-project/:id', async (req, res) => {
+app.get('/api/snapshots/by-project/:id', async (req, res) => {
     try {
         const { id } = req.params
         const [page, size] = [req.query.page || 0, req.query.size || config.defaultPageSize]

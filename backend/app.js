@@ -3,6 +3,7 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
+const path = require('path');
 const YAML = require('yaml')
 const config = require('./configuration')
 
@@ -18,7 +19,9 @@ app.use(bodyParser.json())
 const apifile = fs.readFileSync(config.openApiYaml, 'utf8')
 app.use(config.openApiUi, swaggerUi.serve, swaggerUi.setup(YAML.parse(apifile)))
 
-app.get('/', function (req, res) {
+app.use(express.static('public'))
+
+app.get('/api', function (req, res) {
   res.redirect(config.openApiUi);
 });
 

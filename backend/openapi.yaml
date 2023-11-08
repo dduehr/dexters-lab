@@ -7,7 +7,8 @@ info:
   license:
     name: MIT
 servers:
-  - url: http://localhost:8099
+  - url: https://dexters-lab.onrender.com:443/api
+  - url: http://localhost:8099/api
 paths:
   /projects:
     get:
