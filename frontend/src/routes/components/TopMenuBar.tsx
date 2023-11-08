@@ -12,7 +12,7 @@ export default function TopMenuBar() {
                         <a className={classNames('nav-link', {'active': pathname === '/'})} href="/">Home</a>
                     </li>
                     <li className="nav-item">
-                    <a className={classNames('nav-link', {'active': pathname.startsWith('/projects')})} href="/#/projects">Projects</a>
+                    <a className={classNames('nav-link', {'active': pathname.startsWith('/projects')})} href="/projects">Projects</a>
                     </li>
                 </ul>
             </div>
