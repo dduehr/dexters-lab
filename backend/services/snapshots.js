@@ -70,10 +70,20 @@ app.get('/api/snapshots/by-branch/:id', async (req, res) => {
     }
 })
 
-app.get('/api/snapshots/by-branch/:id/recent', async (req, res) => {
+app.get('/api/snapshots/by-branch/:id/first', async (req, res) => {
     try {
         const { id } = req.params
-        const response = await findRecentSnapshotByBranchId(id)
+        const response = await findFirstSnapshotByBranchId(id, 'ASC')
+        res.status(response ? 200 : 404).json(response)
+    } catch ({ code }) {
+        res.problem(500, code)
+    }
+})
+
+app.get('/api/snapshots/by-branch/:id/last', async (req, res) => {
+    try {
+        const { id } = req.params
+        const response = await findFirstSnapshotByBranchId(id, 'DESC')
         res.status(response ? 200 : 404).json(response)
     } catch ({ code }) {
         res.problem(500, code)
@@ -169,13 +179,13 @@ async function findSnapshotsByProjectId(id, page, size) {
     return [snapshots.map(toDto), count]
 }
 
-async function findRecentSnapshotByBranchId(id) {
+async function findFirstSnapshotByBranchId(id, asc_desc) {
     const snapshot = await db.get(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
         s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
         FROM snapshot s, branch b, project p
         WHERE s.branch_id = ? AND s.branch_id = b.id AND b.project_id = p.id
-        ORDER BY s.created_at DESC LIMIT 1`, id)
+        ORDER BY s.created_at ${asc_desc} LIMIT 1`, id)
 
     return snapshot ? toDto(snapshot) : null
 }
