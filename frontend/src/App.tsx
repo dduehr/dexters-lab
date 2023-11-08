@@ -19,6 +19,7 @@ import findProjectById from './routes/projects/loader/findProjectById'
 import findBranchById from './routes/projects/loader/findBranchById'
 import findSnapshotById from './routes/projects/loader/findSnapshotById'
 import findSnapshotsFirstLastByBranchId from './routes/projects/loader/findSnapshotsFirstLastByBranchId'
+import findSnapshotLastByBranchId from './routes/projects/loader/findSnapshotLastByBranchId';
 
 import createProject from './routes/projects/actions/createProject'
 import createSnapshot from './routes/projects/actions/createSnapshot'
@@ -41,7 +42,7 @@ export default function App() {
               <Route index={true} handle={{ crumb: () => 'Branch Details' }} loader={findSnapshotsFirstLastByBranchId} element={<BranchDetails />} />
               <Route path="snapshots">
                 <Route index={true} loader={() => redirect("pages/0")} />
-                <Route path="new" handle={{ crumb: () => 'New Snapshot' }} action={createSnapshot} element={<SnapshotNew />} />
+                <Route path="new" handle={{ crumb: () => 'New Snapshot' }} action={createSnapshot} loader={findSnapshotLastByBranchId} element={<SnapshotNew />} />
                 <Route path=":snapshotId" handle={{ crumb: (data: Snapshot) => data.createdAt }} loader={findSnapshotById} element={<SnapshotDetails />} />
                 <Route path="pages/:pageNr" element={<ProjectDetails />} />
               </Route>
