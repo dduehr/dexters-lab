@@ -8,7 +8,7 @@ const db = require('./db')
 app.get('/api/projects', async (req, res) => {
     try {
         const [page, size] = [req.query.page || 0, req.query.size || config.defaultPageSize]
-        const [response, count] = await findAllProjects(page, size)
+        const [response, count] = await findProjects(page, size)
         res.set(http.paginationHeader(page, size, count)).json(response)
     } catch ({ code }) {
         res.problem(500, code)
@@ -56,7 +56,7 @@ async function createProject(dto) {
     return findProjectById(project.id)
 }
 
-async function findAllProjects(page, size) {
+async function findProjects(page, size) {
     const { count } = await db.get('SELECT COUNT(1) AS count FROM project')
 
     const projects = await db.all(`SELECT p.id, p.name, p.comment, p.default_branch_id, b.name AS default_branch_name

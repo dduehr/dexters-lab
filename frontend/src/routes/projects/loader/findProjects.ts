@@ -7,13 +7,13 @@ import { Page } from '../../../types/page.ts';
 const loader = async ({ params }: LoaderFunctionArgs): Promise<Response | Page<Project[]>> => {
     const { pageNr: paramsPageNr } = params;
     const pageNr = toInt(paramsPageNr);
+    const pageSize = import.meta.env.VITE_PAGE_SIZE
 
     if (pageNr.toString() !== paramsPageNr) {
         return redirect("/projects/page/0");
     }
 
-    // TODO: rename REST enpoint "findAllProjects" -> "findProjects"
-    const response = await getApi().findAllProjects(pageNr, 10);
+    const response = await getApi().findProjects(pageNr, pageSize);
 
     return {
         nr: response.headers['pagination-currentpage'],
