@@ -14,6 +14,7 @@ export default async function todosAction({ request, params }: ActionFunctionArg
 
   const newSnapshot = {
     branchId: branchId,
+    parentId: formData.parentId,
     data: formData.data,
     comment: formData.comment
   } as NewSnapshot

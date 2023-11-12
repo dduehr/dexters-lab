@@ -1,12 +1,13 @@
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useParams } from "react-router-dom";
 import { Snapshot } from "../../generated/openapi/projects";
 
 export default function SnapshotDetails() {
+    const { projectId, branchId } = useParams()
     const snapshot = useLoaderData() as Snapshot
 
     return (
         <>
-            <h3>Snapshot</h3>
+            <h3>{!snapshot.parentId && 'Initial '}Snapshot</h3>
             <form>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Identifier</label>
@@ -18,7 +19,7 @@ export default function SnapshotDetails() {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="comment" className="form-label">Comment</label>
-                    <textarea className="form-control" id="comment" rows={3} readOnly value={snapshot.comment} />
+                    <textarea className="form-control" id="comment" rows={3} readOnly value={snapshot.comment || undefined} />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="created-by" className="form-label">Author</label>
@@ -28,14 +29,17 @@ export default function SnapshotDetails() {
                     <label htmlFor="created-at" className="form-label">Created</label>
                     <input type="text" className="form-control" id="created-at" readOnly value={snapshot.createdAt} />
                 </div>
-                <div className="card p-3">
-                    <h5>Parent</h5>
-                    <div className="mb-3">
-                        <label htmlFor="parent" className="form-label">Identifier</label>
-                        <input type="text" className="form-control" id="parent" readOnly
-                            value="TODO" />
+                {snapshot.parentId && (
+                    <div className="card p-3">
+                        <h5>Parent</h5>
+                        <div className="mb-3">
+                            <label htmlFor="parent" className="form-label">Identifier</label>
+                            <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${snapshot.parentId}`}>
+                                <input type="text" className="form-control" role="button" id="parent" readOnly value={snapshot.parentId} />
+                            </Link>
+                        </div>
                     </div>
-                </div>
+                )}
             </form>
         </>
     );

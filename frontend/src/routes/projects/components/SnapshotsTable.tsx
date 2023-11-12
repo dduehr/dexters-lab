@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import { LinkContainer } from "react-router-bootstrap";
 import { getApi } from "../../../services/backend";
@@ -37,8 +36,7 @@ export default function SnapshotsTable({ projectId, branchId, pageNr }: Snapshot
                 </tbody>
             </table>
             <nav className="navbar">
-                <div className="container-fluid">
-                    <Link className="btn btn-primary" role="button" aria-disabled="true" to={`/projects/${projectId}/branches/${branchId}/snapshots/new`}>New Snapshot</Link>
+                <div className="container-fluid justify-content-end">
                     <Pagination basePath={`/projects/${projectId}/branches/${branchId}/snapshots/pages`} pageNr={page?.nr || 0} pageCount={page?.count || 1} />
                 </div>
             </nav>
