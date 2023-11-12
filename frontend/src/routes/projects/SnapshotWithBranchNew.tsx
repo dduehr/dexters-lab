@@ -16,6 +16,7 @@ export default function SnapshotWithBranchNew() {
     return (
         <>
             <Form method="post">
+                {problem?.details?.projectId && <div className="invalid-feedback d-block mb-3">{problem?.details?.projectId}</div>}
                 <div className="form-group mb-3">
                     <label htmlFor="branchName" className="form-label">Branch Name<sup>*</sup></label>
                     <input type="input" className="form-control" name="branchName" onChange={dispatch(setBranchName)} />
@@ -36,7 +37,7 @@ export default function SnapshotWithBranchNew() {
                 </div>
                 <nav className="navbar-collapse">
                     <button className={classNames('btn', 'btn-primary', 'me-2', { 'disabled': !isFormComplete() })} type="submit">Save</button>
-                    <button className="btn btn-secondary" onClick={() => navigate(-1)}>Cancel</button>
+                    <button className="btn btn-secondary" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>Cancel</button>
                 </nav>
             </Form>
         </>

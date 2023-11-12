@@ -22,6 +22,7 @@ module.exports = [
     `CREATE TABLE snapshot
      (
          id         TEXT NOT NULL PRIMARY KEY,
+         parent_id  TEXT,
          data       TEXT NOT NULL,
          comment    TEXT,
          created_by TEXT NOT NULL,
@@ -66,9 +67,9 @@ module.exports = [
     `UPDATE project SET default_branch_id = '8f7c8ecf-c65c-49ec-b6a1-04a82d368318' WHERE id = '05b94129-7c15-4be0-a50b-756b2dc153dd'`,
     `INSERT INTO branch (id, project_id, name) VALUES('a935eeaf-a5f2-4dde-b425-c19ad3517fba', '05b94129-7c15-4be0-a50b-756b2dc153dd', 'development')`,
 
-    `INSERT INTO snapshot (id, data, comment, created_by, created_at) VALUES('31918c4b-deed-4566-b01e-19bb47d0b932', 'Some data', 'Initial snapshot', '<unknown>', '2023-10-31T10:37:57.783Z')`,
-    `INSERT INTO snapshot (id, data, comment, created_by, created_at) VALUES('75f1278a-b915-4851-9a8d-2efc8eb5e12f', 'Some data (updated)', null, '<unknown>', '2023-10-31T10:48:32.284Z')`,
-    `INSERT INTO snapshot (id, data, comment, created_by, created_at) VALUES('cfb5b3eb-ab57-41a7-a526-0c138ce9113a', 'Loads of data', 'Not for production use', '<unknown>', '2023-10-31T10:44:47.754Z')`,
+    `INSERT INTO snapshot (id, parent_id, data, comment, created_by, created_at) VALUES('31918c4b-deed-4566-b01e-19bb47d0b932', null, 'Some data', 'Initial snapshot', '<unknown>', '2023-10-31T10:37:57.783Z')`,
+    `INSERT INTO snapshot (id, parent_id, data, comment, created_by, created_at) VALUES('75f1278a-b915-4851-9a8d-2efc8eb5e12f', '31918c4b-deed-4566-b01e-19bb47d0b932', 'Some data (updated)', null, '<unknown>', '2023-10-31T10:48:32.284Z')`,
+    `INSERT INTO snapshot (id, parent_id, data, comment, created_by, created_at) VALUES('cfb5b3eb-ab57-41a7-a526-0c138ce9113a', null, 'Loads of data', 'Not for production use', '<unknown>', '2023-10-31T10:44:47.754Z')`,
 
     `INSERT INTO branch_snapshot (branch_id, snapshot_id) VALUES('8f7c8ecf-c65c-49ec-b6a1-04a82d368318', '31918c4b-deed-4566-b01e-19bb47d0b932')`,
     `INSERT INTO branch_snapshot (branch_id, snapshot_id) VALUES('8f7c8ecf-c65c-49ec-b6a1-04a82d368318', '75f1278a-b915-4851-9a8d-2efc8eb5e12f')`,

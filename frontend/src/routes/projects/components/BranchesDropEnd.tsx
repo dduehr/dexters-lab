@@ -34,8 +34,6 @@ export default function BranchesDropEnd({ projectId, branchId }: BranchesDropEnd
                                 </Link>
                             </li>))
                         }
-                        <li><hr className="dropdown-divider" /></li>
-                        <li><Link className="dropdown-item" to={`/projects/${projectId}/branches/new`}>New Branch</Link></li>
                     </ul>
                 </div>)
             }

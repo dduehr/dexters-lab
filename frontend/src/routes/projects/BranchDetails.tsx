@@ -1,7 +1,8 @@
-import { useLoaderData, useRouteLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useParams, useRouteLoaderData } from "react-router-dom";
 import { Branch, Snapshot } from "../../generated/openapi/projects";
 
 export default function BranchDetails() {
+    const { projectId, branchId } = useParams()
     const { name: branchName } = useRouteLoaderData("branch") as Branch
     const [firstSnapshot, lastSnapshot] = useLoaderData() as [Snapshot, Snapshot]
 
@@ -19,16 +20,18 @@ export default function BranchDetails() {
                         <div id="collapseInitialSnapshot" className="accordion-collapse collapse" data-bs-parent="#initialSnapshotAccordion">
                             <div className="accordion-body">
                                 <div className="mb-3">
-                                    <label htmlFor="parent" className="form-label">Identifier</label>
-                                    <input type="text" className="form-control" id="parent" readOnly value={firstSnapshot.id} />
+                                    <label htmlFor="first-id" className="form-label">Identifier</label>
+                                    <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${firstSnapshot.id}`}>
+                                        <input type="text" className="form-control" role="button" id="first-id" readOnly value={firstSnapshot.id} />
+                                    </Link>
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="created-by" className="form-label">Author</label>
-                                    <input type="text" className="form-control" id="created-by" readOnly value={firstSnapshot.createdBy} />
+                                    <label htmlFor="first-created-by" className="form-label">Author</label>
+                                    <input type="text" className="form-control" id="first-created-by" readOnly value={firstSnapshot.createdBy} />
                                 </div>
                                 <div>
-                                    <label htmlFor="created-at" className="form-label">Created</label>
-                                    <input type="text" className="form-control" id="created-at" readOnly value={firstSnapshot.createdAt} />
+                                    <label htmlFor="first-created-at" className="form-label">Created</label>
+                                    <input type="text" className="form-control" id="first-created-at" readOnly value={firstSnapshot.createdAt} />
                                 </div>
                             </div>
                         </div>
@@ -38,28 +41,41 @@ export default function BranchDetails() {
                 <div className="card p-3 my-3">
                     <h5>Latest Snapshot</h5>
                     <div className="mb-3">
-                        <label htmlFor="parent" className="form-label">Identifier</label>
-                        <input type="text" className="form-control" id="parent" readOnly value={lastSnapshot.id} />
+                        <label htmlFor="last-parent" className="form-label">Parent Identifier</label>
+                        <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${lastSnapshot.parentId}`}>
+                            <input type="text" className="form-control" role="button" id="last-parent" readOnly value={lastSnapshot.parentId} />
+                        </Link>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="data" className="form-label">Data</label>
-                        <textarea className="form-control" id="data" rows={3} readOnly value={lastSnapshot.data} />
+                        <label htmlFor="last-id" className="form-label">Identifier</label>
+                        <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${lastSnapshot.id}`}>
+                            <input type="text" className="form-control" role="button" id="last-id" readOnly value={lastSnapshot.id} />
+                        </Link>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="data" className="form-label">Comment</label>
-                        <textarea className="form-control" id="data" rows={3} readOnly value={lastSnapshot.comment} />
+                        <label htmlFor="last-data" className="form-label">Data</label>
+                        <textarea className="form-control" id="last-data" rows={3} readOnly value={lastSnapshot.data} />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="created-by" className="form-label">Author</label>
-                        <input type="text" className="form-control" id="created-by" readOnly value={lastSnapshot.createdBy} />
+                        <label htmlFor="last-comment" className="form-label">Comment</label>
+                        <textarea className="form-control" id="last-comnment" rows={3} readOnly value={lastSnapshot.comment} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="last-created-by" className="form-label">Author</label>
+                        <input type="text" className="form-control" id="last-created-by" readOnly value={lastSnapshot.createdBy} />
                     </div>
                     <div>
-                        <label htmlFor="created-at" className="form-label">Created</label>
-                        <input type="text" className="form-control" id="created-at" readOnly value={lastSnapshot.createdAt} />
+                        <label htmlFor="last-created-at" className="form-label">Created</label>
+                        <input type="text" className="form-control" id="last-created-at" readOnly value={lastSnapshot.createdAt} />
                     </div>
                 </div>
-
             </form>
+
+            <nav className="navbar">
+                <div className="container-fluid">
+                    <Link className="btn btn-primary" role="button" aria-disabled="true" to={`/projects/${projectId}/branches/${branchId}/snapshots/new`}>New Snapshot</Link>
+                </div>
+            </nav>
         </>
     );
 }

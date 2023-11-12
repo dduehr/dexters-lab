@@ -17,7 +17,15 @@ app.post('/api/snapshots', async (req, res) => {
             res.json(response)
         } catch ({ code }) {
             await db.run('ROLLBACK')
-            res.problem(500, code)
+            switch (code) {
+                case 'APP_PROJECT_OUTDATED_PARENT':
+                    res.problem(400, code, {
+                        projectId: `The parent snaphot with ID '${req.body.parentId}' of the branch with ID '${req.body.branchId}' is outdated`
+                    })
+                    break
+                default:
+                    res.problem(500, code)
+            }
         }
     }
 })
@@ -37,7 +45,12 @@ app.post('/api/snapshots/new-branch', async (req, res) => {
             switch (code) {
                 case 'APP_PROJECT_NOT_FOUND':
                     res.problem(400, code, {
-                        projectId: `A project with the ID '${req.body.projectId}' was not found`
+                        projectId: `A project with ID '${req.body.projectId}' was not found`
+                    })
+                    break
+                case 'APP_PROJECT_ALREADY_INITIALIZED':
+                    res.problem(400, code, {
+                        projectId: `The project with ID '${req.body.projectId}' is already initialized`
                     })
                     break
                 case 'SQLITE_CONSTRAINT':
@@ -113,7 +126,9 @@ async function createSnapshotWithBranch(dto) {
         throw { code: 'APP_PROJECT_NOT_FOUND' }
     }
 
-    //TODO: error if the project already has a branch
+    if (project.default_branch_id) {
+        throw { code: 'APP_PROJECT_ALREADY_INITIALIZED' }
+    }
 
     const branch = {
         id: uuid.v4(), projectId: projectId, name: branchName
@@ -125,14 +140,20 @@ async function createSnapshotWithBranch(dto) {
     await db.run('UPDATE project SET default_branch_id = ? WHERE id = ?',
         branch.id, branch.projectId)
 
-    return createSnapshot({ branchId: branch.id, data: data, comment: comment })
+    return createSnapshot({ branchId: branch.id, parentId: null, data: data, comment: comment })
 }
 
 async function createSnapshot(dto) {
     const snapshot = { ...dto, id: uuid.v4(), createdBy: '<unknown>', createdAt: new Date().toISOString() }
 
-    await db.run('INSERT INTO snapshot (id, data, comment, created_by, created_at) VALUES (?, ?, ?, ?, ?)',
-        snapshot.id, snapshot.data, snapshot.comment, snapshot.createdBy, snapshot.createdAt)
+    const parent = await findFirstSnapshotByBranchId(snapshot.branchId, 'DESC') || { id: null }
+
+    if (parent.id !== snapshot.parentId) {
+        throw { code: 'APP_PROJECT_OUTDATED_PARENT' }
+    }
+
+    await db.run('INSERT INTO snapshot (id, parent_id, data, comment, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        snapshot.id, snapshot.parentId, snapshot.data, snapshot.comment, snapshot.createdBy, snapshot.createdAt)
 
     await db.run('INSERT INTO branch_snapshot (branch_id, snapshot_id) VALUES (?, ?)',
         snapshot.branchId, snapshot.id)
@@ -141,7 +162,7 @@ async function createSnapshot(dto) {
 }
 
 async function findSnapshotById(id) {
-    const plainSnapshot = await db.get(`SELECT id, data, comment,
+    const plainSnapshot = await db.get(`SELECT id, parent_id AS parentId, data, comment,
         created_by as createdBy, created_at as createdAt
         FROM snapshot WHERE id = ?`, id)
 
@@ -151,7 +172,7 @@ async function findSnapshotById(id) {
 async function findSnapshotByBranchIdAndSnapshotId(branchId, snapshotId) {
     const snapshot = await db.get(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
-        s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
+        s.parent_id as parentId, s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
         FROM branch_snapshot bs, snapshot s, branch b, project p
         WHERE bs.branch_id = ? AND bs.snapshot_id = ? AND bs.snapshot_id = s.id
         AND bs.branch_id = b.id AND b.project_id = p.id`,
@@ -165,7 +186,7 @@ async function findSnapshotsByBranchId(id, page, size) {
 
     const snapshots = await db.all(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
-        s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
+        s.parent_id as parentId, s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
         FROM branch_snapshot bs, snapshot s, branch b, project p
         WHERE bs.branch_id = ? AND bs.snapshot_id =  s.id AND bs.branch_id = b.id AND b.project_id = p.id
         ORDER BY s.created_at DESC LIMIT ?, ?`, id, page * size, size)
@@ -178,7 +199,7 @@ async function findSnapshotsByProjectId(id, page, size) {
 
     const snapshots = await db.all(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
-        s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
+        s.parent_id as parentId, s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
         FROM branch_snapshot bs, snapshot s, branch b, project p
         WHERE bs.branch_id = b.id AND bs.snapshot_id = s.id AND b.project_id = p.id AND p.id = ?
         ORDER BY s.created_at DESC LIMIT ?, ?`, id, page * size, size)
@@ -189,7 +210,7 @@ async function findSnapshotsByProjectId(id, page, size) {
 async function findFirstSnapshotByBranchId(id, asc_desc) {
     const snapshot = await db.get(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
-        s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
+        s.parent_id as parentId, s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
         FROM branch_snapshot bs, snapshot s, branch b, project p
         WHERE bs.branch_id = ? AND bs.snapshot_id = s.id AND bs.branch_id = b.id AND b.project_id = p.id
         ORDER BY s.created_at ${asc_desc} LIMIT 1`, id)

@@ -483,9 +483,12 @@ components:
       type: object
       required:
         - branchId
+        - parentId
         - data
       properties:
         branchId:
+          $ref: '#/components/schemas/IDType'
+        parentId:
           $ref: '#/components/schemas/IDType'
         data:
           $ref: '#/components/schemas/DataType'
@@ -501,6 +504,8 @@ components:
         - createdAt
       properties:
         id:
+          $ref: '#/components/schemas/IDType'
+        parentId:
           $ref: '#/components/schemas/IDType'
         data:
           $ref: '#/components/schemas/DataType'

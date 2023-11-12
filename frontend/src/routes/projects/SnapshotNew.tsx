@@ -18,6 +18,10 @@ export default function SnapshotNew() {
             <Form method="post">
                 <input type="hidden" name="lastData" value={lastSnapshot.data} />
                 <div className="form-group mb-3">
+                    <label htmlFor="parent-id" className="form-label">Parent ID</label>
+                    <input type="input" className="form-control" name="parentId" readOnly value={lastSnapshot.id}/>
+                </div>
+                <div className="form-group mb-3">
                     <label htmlFor="data" className="form-label">Data<sup>*</sup></label>
                     <textarea className="form-control" name="data" rows={3} defaultValue={lastSnapshot.data} onChange={dispatch(setData)} />
                     {problem?.details?.data && <div className="invalid-feedback d-block">{problem?.details?.data}</div>}
