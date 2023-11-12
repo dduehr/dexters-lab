@@ -6,3 +6,13 @@ Install and start the backend:
 npm install
 npm start
 ```
+
+Run a SQLite shell with the initial database:
+
+```sh
+npm run sqlite
+.read db.sql
+select * from project;
+.quit
+```
+

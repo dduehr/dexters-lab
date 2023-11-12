@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "sqlite": "node services/export.js ./build && docker run --rm -it -v ./build:/workspace -w /workspace keinos/sqlite3"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
