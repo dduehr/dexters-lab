@@ -11,9 +11,12 @@ app.post('/api/snapshots', async (req, res) => {
         res.problem(400, 'BAD_REQUEST', missingFields)
     } else {
         try {
+            await db.run('BEGIN')
             const response = await createSnapshot(req.body)
+            await db.run('COMMIT')
             res.json(response)
         } catch ({ code }) {
+            await db.run('ROLLBACK')
             res.problem(500, code)
         }
     }
@@ -101,15 +104,6 @@ app.get('/api/snapshots/by-project/:id', async (req, res) => {
     }
 })
 
-async function createSnapshot(dto) {
-    const snapshot = { ...dto, id: uuid.v4(), createdBy: '<unknown>', createdAt: new Date().toISOString() }
-
-    await db.run('INSERT INTO snapshot (id, branch_id, data, comment, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        snapshot.id, snapshot.branchId, snapshot.data, snapshot.comment, snapshot.createdBy, snapshot.createdAt)
-
-    return findSnapshotById(snapshot.id)
-}
-
 async function createSnapshotWithBranch(dto) {
     const { projectId, branchName, data, comment } = dto
 
@@ -119,6 +113,8 @@ async function createSnapshotWithBranch(dto) {
         throw { code: 'APP_PROJECT_NOT_FOUND' }
     }
 
+    //TODO: error if the project already has a branch
+
     const branch = {
         id: uuid.v4(), projectId: projectId, name: branchName
     }
@@ -126,54 +122,65 @@ async function createSnapshotWithBranch(dto) {
     await db.run('INSERT INTO branch (id, project_id, name) VALUES (?, ?, ?)',
         branch.id, branch.projectId, branch.name)
 
-    if (!project.default_branch_id) {
-        project.default_branch_id = branch.id
-        await db.run('UPDATE project SET default_branch_id = ? WHERE id = ?',
-            project.default_branch_id, projectId)
-    }
+    await db.run('UPDATE project SET default_branch_id = ? WHERE id = ?',
+        branch.id, branch.projectId)
 
-    const snapshot = {
-        id: uuid.v4(), branchId: branch.id, data: data, comment: comment,
-        createdBy: '<unknown>', createdAt: new Date().toISOString()
-    }
+    return createSnapshot({ branchId: branch.id, data: data, comment: comment })
+}
 
-    await db.run('INSERT INTO snapshot (id, branch_id, data, comment, created_by, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-        snapshot.id, snapshot.branchId, snapshot.data, snapshot.comment, snapshot.createdBy, snapshot.createdAt)
+async function createSnapshot(dto) {
+    const snapshot = { ...dto, id: uuid.v4(), createdBy: '<unknown>', createdAt: new Date().toISOString() }
 
-    return findSnapshotById(snapshot.id)
+    await db.run('INSERT INTO snapshot (id, data, comment, created_by, created_at) VALUES (?, ?, ?, ?, ?)',
+        snapshot.id, snapshot.data, snapshot.comment, snapshot.createdBy, snapshot.createdAt)
+
+    await db.run('INSERT INTO branch_snapshot (branch_id, snapshot_id) VALUES (?, ?)',
+        snapshot.branchId, snapshot.id)
+
+    return findSnapshotByBranchIdAndSnapshotId(snapshot.branchId, snapshot.id)
 }
 
 async function findSnapshotById(id) {
+    const plainSnapshot = await db.get(`SELECT id, data, comment,
+        created_by as createdBy, created_at as createdAt
+        FROM snapshot WHERE id = ?`, id)
+
+    return plainSnapshot
+}
+
+async function findSnapshotByBranchIdAndSnapshotId(branchId, snapshotId) {
     const snapshot = await db.get(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
         s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
-        FROM snapshot s, branch b, project p
-        WHERE s.id = ? AND s.branch_id = b.id AND b.project_id = p.id`, id)
+        FROM branch_snapshot bs, snapshot s, branch b, project p
+        WHERE bs.branch_id = ? AND bs.snapshot_id = ? AND bs.snapshot_id = s.id
+        AND bs.branch_id = b.id AND b.project_id = p.id`,
+        branchId, snapshotId)
 
     return snapshot ? toDto(snapshot) : null
 }
 
 async function findSnapshotsByBranchId(id, page, size) {
-    const { count } = await db.get('SELECT COUNT(1) AS count FROM snapshot WHERE branch_id = ?', id)
+    const { count } = await db.get('SELECT COUNT(1) AS count FROM branch_snapshot WHERE branch_id = ?', id)
 
     const snapshots = await db.all(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
         s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
-        FROM snapshot s, branch b, project p
-        WHERE s.branch_id = ? AND s.branch_id = b.id AND b.project_id = p.id
+        FROM branch_snapshot bs, snapshot s, branch b, project p
+        WHERE bs.branch_id = ? AND bs.snapshot_id =  s.id AND bs.branch_id = b.id AND b.project_id = p.id
         ORDER BY s.created_at DESC LIMIT ?, ?`, id, page * size, size)
 
     return [snapshots.map(toDto), count]
 }
 
 async function findSnapshotsByProjectId(id, page, size) {
-    const { count } = await db.get('SELECT COUNT(1) AS count FROM snapshot s, branch b WHERE s.branch_id = b.id AND b.project_id = ?', id)
+    const { count } = await db.get('SELECT COUNT(1) AS count FROM branch_snapshot bs, branch b WHERE bs.branch_id = b.id AND b.project_id = ?', id)
 
     const snapshots = await db.all(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
         s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
-        FROM snapshot s, branch b, project p
-        WHERE s.branch_id = b.id AND b.project_id = p.id AND p.id = ?
+        FROM branch_snapshot bs, snapshot s, branch b, project p
+        WHERE bs.branch_id = b.id AND bs.snapshot_id = s.id AND b.project_id = p.id AND p.id = ?
         ORDER BY s.created_at DESC LIMIT ?, ?`, id, page * size, size)
 
     return [snapshots.map(toDto), count]
@@ -183,8 +190,8 @@ async function findFirstSnapshotByBranchId(id, asc_desc) {
     const snapshot = await db.get(`SELECT s.id, b.id as branch_id,
         b.name as branch_name, p.default_branch_id as project_default_branch_id,
         s.data, s.comment, s.created_by as createdBy, s.created_at as createdAt
-        FROM snapshot s, branch b, project p
-        WHERE s.branch_id = ? AND s.branch_id = b.id AND b.project_id = p.id
+        FROM branch_snapshot bs, snapshot s, branch b, project p
+        WHERE bs.branch_id = ? AND bs.snapshot_id = s.id AND bs.branch_id = b.id AND b.project_id = p.id
         ORDER BY s.created_at ${asc_desc} LIMIT 1`, id)
 
     return snapshot ? toDto(snapshot) : null
