@@ -492,19 +492,16 @@ components:
         comment:
           $ref: '#/components/schemas/CommentType'
 
-    Snapshot:
+    PlainSnapshot:
       type: object
       required:
         - id
-        - branch
         - data
         - createdBy
         - createdAt
       properties:
         id:
           $ref: '#/components/schemas/IDType'
-        branch:
-          $ref: '#/components/schemas/Branch'
         data:
           $ref: '#/components/schemas/DataType'
         comment:
@@ -515,6 +512,16 @@ components:
         createdAt:
           type: string
           format: 'date-time'
+
+    Snapshot:
+      allOf:
+        - $ref: '#/components/schemas/PlainSnapshot'
+        - type: object
+          required:
+            - branch
+          properties:
+            branch:
+              $ref: '#/components/schemas/Branch'
 
     Problem:
       type: object
