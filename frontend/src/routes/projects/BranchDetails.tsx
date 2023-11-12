@@ -39,13 +39,15 @@ export default function BranchDetails() {
                 </div>
 
                 <div className="card p-3 my-3">
-                    <h5>Latest Snapshot</h5>
-                    <div className="mb-3">
-                        <label htmlFor="last-parent" className="form-label">Parent Identifier</label>
-                        <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${lastSnapshot.parentId}`}>
-                            <input type="text" className="form-control" role="button" id="last-parent" readOnly value={lastSnapshot.parentId} />
-                        </Link>
-                    </div>
+                    <h5>Latest {!lastSnapshot.parentId && '& Initial '}Snapshot</h5>
+                    {lastSnapshot.parentId && (
+                        <div className="mb-3">
+                            <label htmlFor="last-parent" className="form-label">Parent Identifier</label>
+                            <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${lastSnapshot.parentId}`}>
+                                <input type="text" className="form-control" role="button" id="last-parent" readOnly value={lastSnapshot.parentId} />
+                            </Link>
+                        </div>
+                    )}
                     <div className="mb-3">
                         <label htmlFor="last-id" className="form-label">Identifier</label>
                         <Link className="page-link" to={`/projects/${projectId}/branches/${branchId}/snapshots/${lastSnapshot.id}`}>
