@@ -6,11 +6,13 @@ import usePageFetcher from "../../../hooks/usePageFetcher";
 
 type SnapshotsTableProps = {
     projectId: string,
-    branchId: string
+    branchId: string,
+    pageNr: number
 }
 
-export default function SnapshotsTable({ projectId, branchId }: SnapshotsTableProps) {
-    const { page } = usePageFetcher(() => getApi().findSnapshotsByBranchId(branchId as string, 0, 10))
+export default function SnapshotsTable({ projectId, branchId, pageNr }: SnapshotsTableProps) {
+    const pageSize = import.meta.env.VITE_PAGE_SIZE
+    const { page } = usePageFetcher(() => getApi().findSnapshotsByBranchId(branchId as string, pageNr, pageSize))
 
     return (
         <>

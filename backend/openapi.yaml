@@ -13,7 +13,7 @@ paths:
   /projects:
     get:
       description: Find all projects ordered by name
-      operationId: findAllProjects
+      operationId: findProjects
       parameters:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/size'

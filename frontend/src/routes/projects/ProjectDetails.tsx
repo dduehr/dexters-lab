@@ -4,7 +4,7 @@ import BranchesDropEnd from "./components/BranchesDropEnd";
 import SnapshotsTable from "./components/SnapshotsTable";
 
 export default function ProjectDetails() {
-    const { projectId, branchId } = useParams();
+    const { projectId, branchId, pageNr } = useParams();
     const { name, comment } = useRouteLoaderData("project") as Project
 
     return (
@@ -13,7 +13,7 @@ export default function ProjectDetails() {
             <div className="mb-3">{comment}</div>
             {projectId && branchId && (<>
                 <BranchesDropEnd projectId={projectId} branchId={branchId} />
-                <SnapshotsTable projectId={projectId} branchId={branchId} />
+                <SnapshotsTable projectId={projectId} branchId={branchId} pageNr={pageNr}/>
             </>)}
         </>
     );
