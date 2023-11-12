@@ -2,6 +2,7 @@ import { useParams, useRouteLoaderData } from "react-router-dom";
 import { Project } from "../../generated/openapi/projects";
 import BranchesDropEnd from "./components/BranchesDropEnd";
 import SnapshotsTable from "./components/SnapshotsTable";
+import { toInt } from "../../utils/parser";
 
 export default function ProjectDetails() {
     const { projectId, branchId, pageNr } = useParams();
@@ -13,7 +14,7 @@ export default function ProjectDetails() {
             <div className="mb-3">{comment}</div>
             {projectId && branchId && (<>
                 <BranchesDropEnd projectId={projectId} branchId={branchId} />
-                <SnapshotsTable projectId={projectId} branchId={branchId} pageNr={pageNr}/>
+                <SnapshotsTable projectId={projectId} branchId={branchId} pageNr={toInt(pageNr)}/>
             </>)}
         </>
     );
