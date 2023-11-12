@@ -1,9 +1,10 @@
-import { Link, useLoaderData, useParams } from "react-router-dom";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { Snapshot } from "../../generated/openapi/projects";
 
 export default function SnapshotDetails() {
     const { projectId, branchId } = useParams()
     const snapshot = useLoaderData() as Snapshot
+    const navigate = useNavigate();
 
     return (
         <>
@@ -30,7 +31,7 @@ export default function SnapshotDetails() {
                     <input type="text" className="form-control" id="created-at" readOnly value={snapshot.createdAt} />
                 </div>
                 {snapshot.parentId && (
-                    <div className="card p-3">
+                    <div className="card p-3 mb-3">
                         <h5>Parent</h5>
                         <div className="mb-3">
                             <label htmlFor="parent" className="form-label">Identifier</label>
@@ -41,6 +42,9 @@ export default function SnapshotDetails() {
                     </div>
                 )}
             </form>
+            <nav className="form-group navbar-collapse">
+                <button className="btn btn-primary" onClick={() => navigate(-1)}>Back</button>
+            </nav>
         </>
     );
 }
